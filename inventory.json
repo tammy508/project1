@@ -1,0 +1,22 @@
+[
+	{
+		"item_name" : "hat",
+		"price" : 15,
+		"quantity" : 20
+	},
+	{
+		"item_name" : "tshirt",
+		"price" : 12,
+		"quantity" : 20
+	},
+    {
+        "item_name" : "tote",
+		"price" : 10,
+		"quantity" : 20
+    },
+    {
+        "item_name" : "sweater",
+		"price" : 20,
+		"quantity" : 20
+    }
+]
