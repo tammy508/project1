@@ -43,7 +43,7 @@ def menu():
     print("Hello, welcome to the custom order interface! Please select an item from the menu: ")
     print("\ta) Create new custom order")
     print("\tb) Cancel order")
-    print("\tc) Look up past orders")
+    print("\tc) Look up order history")
     print("\td) Update customer info")
     print("\te) Exit the interface")
     
@@ -76,7 +76,7 @@ def order():
     email = input()
     # if email exists, skip to item
     if customers.count_documents({"email": email}) >= 1:
-        print("Welcome back!")
+        print("Welcome back!\n")
         
     else:
         print("First Name: ")
@@ -92,7 +92,7 @@ def order():
     while True:
         item = input()
         if inventory.count_documents({"item_name": item}) == 0:
-            print("The item is not in stock. Please try again.")
+            print("This item is unavailable. Please try again.")
             continue
         else:
             break
@@ -109,6 +109,7 @@ def order():
             print("You must enter a number. Try again.")
 
     cost = get_cost(item, quantity)
+    
     new_order(email, item, custom, quantity, cost)
 
     print("Thank you for your order!")
@@ -126,20 +127,21 @@ def new_customer(email, first_name, last_name, address):
 
 # create new order document in database
 def new_order(email, item, custom, quantity, cost):
+
     new_ord = {
         "email": email,
         "item": item,
         "customization": custom,
         "quantity": quantity,
         "cost": cost,
-        "date_ordered": datetime.now()}
+        "date_ordered": datetime.now().strftime('%m-%d-%Y, %H:%M %S')}
     orders.insert_one(new_ord)
 
 # find the total cost of the items ordered
 def get_cost(item, quantity):
     for i in inventory.find({"item_name" : item}):
         i_price = i.get("price") * quantity
-        print("The total cost of your order is $" + i_price)
+        print("The total cost of your order is $", i_price)
         return i_price
 
 ##########################################################################################################
@@ -182,8 +184,8 @@ def look_up():
             continue
         else:
             for e in orders.find({"email" : email}, {"_id":0}):
-                print("Your order history has been saved in a file for you.")
                 found.append(e)
+            print("Your order history has been saved in a file for you.")
         break
 
     with open('past_orders.json', 'w') as outfile:
