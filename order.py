@@ -40,7 +40,7 @@ class Customer:
 
 # prompt user to create new order or interact with orders
 def menu():
-    print("Hello, welcome to the custom order interface! Please select an item from the menu: ")
+ 
     print("\ta) Create new custom order")
     print("\tb) Cancel order")
     print("\tc) Look up order history")
@@ -64,6 +64,7 @@ def menu():
         elif item == "d":
             modify()
         else:
+            print("Thank you for visiting!")
             exit()
         break
 
@@ -112,7 +113,8 @@ def order():
     
     new_order(email, item, custom, quantity, cost)
 
-    print("Thank you for your order!")
+    print("Thank you for your order!\n")
+    menu()
 
 ##########################################################################################################
 
@@ -141,7 +143,7 @@ def new_order(email, item, custom, quantity, cost):
 def get_cost(item, quantity):
     for i in inventory.find({"item_name" : item}):
         i_price = i.get("price") * quantity
-        print("The total cost of your order is $", i_price)
+        print("The total cost of your order is $", i_price, "\n")
         return i_price
 
 ##########################################################################################################
@@ -166,11 +168,11 @@ def cancel():
             print("I'm sorry, that is an invalid input. Please try again.")
             continue
         elif answer == "y":
-            print("Your most recent order will be cancelled. Thank you for being a customer!")
+            print("Your most recent order will be cancelled.\n")
             orders.find_one_and_delete({"email": email}, sort=[('date_ordered', -1)])
-            break
+            menu()
         else:
-            exit()
+            menu()
 
 # find order history of user and give output in file
 def look_up():
@@ -185,13 +187,14 @@ def look_up():
         else:
             for e in orders.find({"email" : email}, {"_id":0}):
                 found.append(e)
-            print("Your order history has been saved in a file for you.")
+            print("Note: Cancelled orders are not included.\nYour order history has been saved in a file for you.\n")
         break
 
     with open('past_orders.json', 'w') as outfile:
        json.dump(found, outfile, indent=4, default = str)
 
     outfile.close()
+    menu()
 
 # allow users to modify their information
 def modify():
@@ -233,7 +236,8 @@ def modify():
                     customers.update_one({"email": email},{"$set": {"address": newa}})
                 break
         break
-    print("Your changes have been saved!")
+    print("Your changes have been saved!\n")
+    menu()
 
-
+print("Hello, welcome to the custom order interface! Please select an item from the menu: ")
 menu()
